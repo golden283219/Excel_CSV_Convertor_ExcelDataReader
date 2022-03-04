@@ -18,3 +18,14 @@ D:\MyWork\csharp_excel_to_csv\ConsoleApplication1\ConsoleApplication1\obj\Debug\
 D:\MyWork\csharp_excel_to_csv\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
 D:\MyWork\csharp_excel_to_csv\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
 D:\MyWork\csharp_excel_to_csv\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.csproj.AssemblyReference.cache
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe.config
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\bin\Debug\Excel.dll
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\bin\Debug\Excel.pdb
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.csproj.CoreCompileInputs.cache
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.csproj.CopyComplete
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.csproj.AssemblyReference.cache

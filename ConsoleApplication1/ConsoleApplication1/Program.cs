@@ -2,6 +2,11 @@
 using System.IO;
 using System.Data;
 using Excel;
+using System.Data.OleDb;
+using System.Data.SqlClient;
+using System.Configuration;
+using Microsoft.VisualBasic.FileIO;
+
 namespace ExcelToCsvApp
 {
     class ExcelToCsv
@@ -61,8 +66,13 @@ namespace ExcelToCsvApp
             }
             Console.WriteLine("\nCSV file has been successfully created.");
             if (writer != null)
+            {
                 writer.Close();
+                inputStream.Close();
+                excelReader.Close();
+            }
         }
+
     }
     class ConvertExec
     {
@@ -71,10 +81,11 @@ namespace ExcelToCsvApp
         static void Main(string[] args)
         {
 
-            string filename = CheckFile();
+            string directoryname = CheckFile();
+            //string directoryname = "D:\\Temp";
+            logfilePath = directoryname + "\\watch.log";
 
-            logfilePath = Path.GetDirectoryName(filename) + "\\watch.log";
-            var watcher = new FileSystemWatcher(Path.GetDirectoryName(filename));
+            var watcher = new FileSystemWatcher(directoryname);
 
             watcher.NotifyFilter = NotifyFilters.Attributes
                                  | NotifyFilters.CreationTime
@@ -95,30 +106,97 @@ namespace ExcelToCsvApp
             watcher.IncludeSubdirectories = true;
             watcher.EnableRaisingEvents = true;
 
-            try
+            foreach (var files in Directory.GetFiles(directoryname))
             {
-                if (filename != null)
+                FileInfo info = new FileInfo(files);
+                var fileName = Path.GetFileName(info.FullName);
+                Console.WriteLine(fileName);
+                Console.WriteLine(info.Length);
+                fileName = directoryname + "\\" + fileName;
+                /*
+                string conString = string.Empty;
+                string storedProc = string.Empty;
+                string sheet1 = string.Empty;
+                string extension = Path.GetExtension(fileName);
+                switch (extension)
                 {
-                    ExcelToCsv obj = new ExcelToCsv(filename);
-                    string opfilename = filename.Substring(0, (filename.IndexOf(".xls"))) + ".csv";
-                    obj.Convert(opfilename);
+                    case ".xls": //Excel 97-03.
+                        storedProc = "spx_ImportFromExcel03";
+                        conString = ConfigurationManager.ConnectionStrings["Excel03ConString"].ConnectionString;
+                        break;
+                    case ".xlsx": //Excel 07 or higher.
+                        storedProc = "spx_ImportFromExcel07";
+                        conString = ConfigurationManager.ConnectionStrings["Excel07+ConString"].ConnectionString;
+                        break;
+
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("\nAn exception has occured.");
-                Console.WriteLine(e.ToString());
+                
+                //Read the Sheet Name.
+                conString = string.Format(conString, fileName);
+                using (OleDbConnection excel_con = new OleDbConnection(conString))
+                {
+                    excel_con.Open();
+                    sheet1 = excel_con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null).Rows[0]["TABLE_NAME"].ToString();
+                    excel_con.Close();
+                }
+
+
+                //Call the Stored Procedure to import Excel data in Table.
+                string constr = ConfigurationManager.ConnectionStrings["conString"].ConnectionString;
+                using (SqlConnection con = new SqlConnection(constr))
+                {
+                    using (SqlCommand cmd = new SqlCommand(storedProc, con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@SheetName", sheet1);
+                        cmd.Parameters.AddWithValue("@FilePath", fileName);
+                        cmd.Parameters.AddWithValue("@HDR", "YES");
+                        cmd.Parameters.AddWithValue("@TableName", "TBEXAMPLE");
+                        cmd.Connection = con;
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
+                }
+                */
+                if (!File.Exists(fileName) || (Path.GetExtension(fileName) != ".xls" && Path.GetExtension(fileName) != ".xlsx"))
+                {
+                    Console.WriteLine("\nInvalid file path or extension.");
+                }
+                else
+                {
+
+                    try
+                    {
+                        if (fileName != null)
+                        {
+                            ExcelToCsv obj = new ExcelToCsv(fileName);
+                            string opfilename = fileName.Substring(0, (fileName.IndexOf(".xls"))) + ".csv";
+                            obj.Convert(opfilename);
+                            DataTable dataTable = GetDataTabletFromCSVFile(opfilename);
+                            InsertDataIntoSQLServerUsingSQLBulkCopy(dataTable);
+
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("\nAn exception has occured.");
+                        Console.WriteLine(e.ToString());
+                    }
+                }
             }
             Console.WriteLine("Terminating...");
             Console.ReadLine();
         }
         private static string CheckFile()
         {
-            Console.Write("\nEnter \\path\\to\\filename: ");
+            Console.Write("\nEnter \\path: ");
             string fileName = Console.ReadLine();
-            fileName = fileName.Replace(@"\",@"\\");
+            fileName = fileName.Replace(@"\", @"\\");
             fileName = fileName.Replace(@"/", @"\\");
-           // Check if file exists and file type is supported
+            return fileName;
+            /*
+            // Check if file exists and file type is supported
             if (!File.Exists(fileName) || (Path.GetExtension(fileName) != ".xls" && Path.GetExtension(fileName) != ".xlsx"))
             {
                 Console.WriteLine("\nInvalid file path or extension.");
@@ -126,6 +204,58 @@ namespace ExcelToCsvApp
             }
             else
                 return fileName;
+            */
+        }
+        private static DataTable GetDataTabletFromCSVFile(string csv_file_path)
+        {
+            DataTable csvData = new DataTable();
+            try
+            {
+                using (TextFieldParser csvReader = new TextFieldParser(csv_file_path))
+                {
+                    csvReader.SetDelimiters(new string[] { "," });
+                    csvReader.HasFieldsEnclosedInQuotes = true;
+                    string[] colFields = csvReader.ReadFields();
+                    foreach (string column in colFields)
+                    {
+                        DataColumn datecolumn = new DataColumn(column);
+                        datecolumn.AllowDBNull = true;
+                        csvData.Columns.Add(datecolumn);
+                    }
+                    while (!csvReader.EndOfData)
+                    {
+                        string[] fieldData = csvReader.ReadFields();
+                        //Making empty value as null
+                        for (int i = 0; i < fieldData.Length; i++)
+                        {
+                            if (fieldData[i] == "")
+                            {
+                                fieldData[i] = null;
+                            }
+                        }
+                        csvData.Rows.Add(fieldData);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return csvData;
+        }
+        private static void InsertDataIntoSQLServerUsingSQLBulkCopy(DataTable csvFileData)
+        {
+            using (SqlConnection dbConnection = new SqlConnection("Data Source=localhost;database=testdb;Integrated Security=true"))
+            {
+                dbConnection.Open();
+                using (SqlBulkCopy s = new SqlBulkCopy(dbConnection))
+                {
+                    s.DestinationTableName = "tblPersons";
+                    foreach (var column in csvFileData.Columns)
+                        s.ColumnMappings.Add(column.ToString(), column.ToString());
+                    s.WriteToServer(csvFileData);
+                }
+            }
         }
         private static void OnChanged(object sender, FileSystemEventArgs e)
         {
@@ -134,7 +264,7 @@ namespace ExcelToCsvApp
                 return;
             }
             logWriter = new StreamWriter(logfilePath, true);
-            
+
             logWriter.WriteLine($"{DateTime.UtcNow.ToString()} Changed: {e.FullPath}");
 
             Console.WriteLine($"{DateTime.UtcNow.ToString()} Changed: {e.FullPath}");
@@ -202,5 +332,7 @@ namespace ExcelToCsvApp
                 PrintException(ex.InnerException);
             }
         }
+        
     }
 }
+

@@ -1,0 +1,11 @@
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\bin\x86\Debug\ConsoleApplication1.exe.config
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\bin\x86\Debug\ConsoleApplication1.exe
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\bin\x86\Debug\ConsoleApplication1.pdb
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\bin\x86\Debug\Excel.dll
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\bin\x86\Debug\ICSharpCode.SharpZipLib.dll
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\bin\x86\Debug\Excel.pdb
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.csproj.CoreCompileInputs.cache
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.csproj.CopyComplete
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.exe
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.pdb
+D:\MyWork\excel_to_csv_convertor\ConsoleApplication1\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.csproj.AssemblyReference.cache
